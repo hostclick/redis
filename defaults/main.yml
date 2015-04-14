@@ -1,0 +1,33 @@
+#General
+redis_daemonize: 'yes'
+redis_port: 6379
+redis_tcp_backlog: 511
+#redis_bind_interface
+redis_timeout: 0
+redis_tcp_keepalive: 60
+redis_loglevel: "notice"
+redis_databases: 16
+
+#Snapshotting
+redis_save:
+  - 900 1
+  - 300 10
+  - 60 10000
+redis_rdbcompression: "yes"
+
+#Limits
+redis_maxclients: 10000
+redis_maxmemory: "{{ (ansible_memtotal_mb * 0.6 * 1024 * 1024)|round(0, 'ceil')|int }}"
+redis_maxmemory_policy: "volatile-lru"
+#redis_maxmemory-samples:
+
+#Append only mode
+redis_appendonly: "no"
+redis_appendfsync: "no"
+redis_no_appendfsync_on_rewrite: "no"
+redis_auto_aof_rewrite_percentage: 100
+redis_auto_aof_rewrite_min_size: "64mb"
+
+#Slow log
+redis_slowlog_log_slower_than: 10000
+redis_slowlog_max_len: 128

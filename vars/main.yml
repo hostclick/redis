@@ -1,0 +1,6 @@
+redis_daemon: redis
+redis_conf_path: /etc/redis.conf
+
+thp_commands:
+  - command: /sys/kernel/mm/redhat_transparent_hugepage/enabled
+    value: 'never'

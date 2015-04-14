@@ -1,0 +1,35 @@
+- action: setup
+  tags: redis
+
+- name: Copy the remi repository definition
+  copy: src=remi.repo dest=/etc/yum.repos.d/remi.repo
+  tags: redis
+
+- name: Create the GPG key for remi
+  copy: src=RPM-GPG-KEY-remi dest=/etc/pki/rpm-gpg/
+  tags: redis
+
+- name: Install Redis
+  yum: name=redis state=installed enablerepo=remi
+  tags: redis
+
+- name: Configure Redis
+  template: src=redis.conf.j2 dest="{{ redis_conf_path }}" mode=0644
+  notify: restart redis
+  tags: redis
+  
+- name: Change overcommit policy to avoid fork() error (http://redis.io/topics/faq)
+  sysctl: name="vm.overcommit_memory" value=1 state=present reload=yes
+  when: is_docker_container is not defined or is_docker_container|bool == false
+  notify: restart redis
+  tags: redis
+
+- name: Ensure Redis is running and enabled on boot
+  service: name={{ redis_daemon }} state=started enabled=yes
+  when: redis_daemonize|lower == 'yes'
+  tags: redis
+  
+- name: Ensure Redis is stopped and disabled on boot
+  service: name={{ redis_daemon }} state=stopped enabled=no
+  when: redis_daemonize|lower != 'yes'
+  tags: redis
