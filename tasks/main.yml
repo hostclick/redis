@@ -1,6 +1,3 @@
-- action: setup
-  tags: redis
-
 - name: Copy the remi repository definition
   copy: src=remi.repo dest=/etc/yum.repos.d/remi.repo
   tags: redis
@@ -11,6 +8,10 @@
 
 - name: Install Redis
   yum: name=redis state=installed enablerepo=remi
+  tags: redis
+  
+- name: Install nc for monitoring
+  yum: name=nc state=installed
   tags: redis
 
 - name: Configure Redis
